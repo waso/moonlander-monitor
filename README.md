@@ -3,9 +3,9 @@
 This is a web app for monitoring hash rate performance of FutureBit MoonLander 2 LiteCoin scrypt USB miner (https://www.amazon.com/FutureBit-MoonLander-LiteCoin-Scrypt-Miner/dp/B0781D19S2).
 Web app monitors log output from bfgminer_5.4.2-futurebit2_linux_armv6, pushes hash rate to redis store and displays on page with chartjs charts.
 For now there are 3 default charts:
-    - last hour hash rate
-    - last 24 hours hash rate
-    - last 7 days hash rate
+- last hour hash rate
+- last 24 hours hash rate
+- last 7 days hash rate
 
 ### Required software/tools
 
