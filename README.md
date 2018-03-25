@@ -34,8 +34,7 @@ java -jar ./moonlander-monitor-0.0.1-SNAPSHOT.war
 
 ### sample screen
 
-
-[[https://github.com/waso/moonlander-monitor/blob/master/src/main/resources/moonlander-monitor-dashboard.png|alt=dashboard]]
+![sample screen](https://github.com/waso/moonlander-monitor/blob/master/src/main/resources/moonlander-monitor-dashboard.png)
 
 ### open bugs/issues
 
