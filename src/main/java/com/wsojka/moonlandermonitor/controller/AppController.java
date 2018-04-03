@@ -16,24 +16,23 @@
  */
 package com.wsojka.moonlandermonitor.controller;
 
-import com.wsojka.moonlandermonitor.model.MoonlanderProperty;
+import com.wsojka.moonlandermonitor.model.HashRate;
 import com.wsojka.moonlandermonitor.service.MoonlanderService;
 import org.apache.log4j.Logger;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.text.DecimalFormat;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Controller
@@ -46,19 +45,19 @@ public class AppController {
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String index(ModelMap model) {
-        long endTimestampp = Instant.now().getEpochSecond();
-        long lastHourTimestamp = Instant.now().minus(1, ChronoUnit.HOURS).getEpochSecond();
-        long last24HoursTimestamp = Instant.now().minus(24, ChronoUnit.HOURS).getEpochSecond();
-        long last7daysTimestamp = Instant.now().minus(7, ChronoUnit.DAYS).getEpochSecond();
-        Set<ZSetOperations.TypedTuple<String>> allData = moonlanderService.getPropertyValues(MoonlanderProperty.ML_HASH_RATE, last7daysTimestamp, endTimestampp);
+        long endTimestampp = Instant.now().toEpochMilli();
+        long lastHourTimestamp = Instant.now().minus(1, ChronoUnit.HOURS).toEpochMilli();
+        long last24HoursTimestamp = Instant.now().minus(24, ChronoUnit.HOURS).toEpochMilli();
+        long last7daysTimestamp = Instant.now().minus(7, ChronoUnit.DAYS).toEpochMilli();
+        List<HashRate> allData = moonlanderService.getHashRates(last7daysTimestamp, endTimestampp);
 
-        List<ZSetOperations.TypedTuple<String>> lastHourData = allData.parallelStream().filter(e -> e.getScore().longValue() > lastHourTimestamp).collect(Collectors.toList());
-        List<ZSetOperations.TypedTuple<String>> last24HoursData = allData.parallelStream().filter(e -> e.getScore().longValue() > last24HoursTimestamp).collect(Collectors.toList());
-        List<ZSetOperations.TypedTuple<String>> last30DaysData = allData.parallelStream().filter(e -> e.getScore().longValue() > last7daysTimestamp).collect(Collectors.toList());
+        List<HashRate> lastHourData = allData.parallelStream().filter(e -> e.getDate().getTimeInMillis() > lastHourTimestamp).collect(Collectors.toList());
+        List<HashRate> last24HoursData = allData.parallelStream().filter(e -> e.getDate().getTimeInMillis() > last24HoursTimestamp).collect(Collectors.toList());
+        List<HashRate> last30DaysData = allData.parallelStream().filter(e -> e.getDate().getTimeInMillis() > last7daysTimestamp).collect(Collectors.toList());
 
-        lastHourData = lastHourData.parallelStream().sorted(Comparator.comparing(ZSetOperations.TypedTuple::getScore)).collect(Collectors.toList());
-        last24HoursData = last24HoursData.parallelStream().sorted(Comparator.comparing(ZSetOperations.TypedTuple::getScore)).collect(Collectors.toList());
-        last30DaysData = last30DaysData.parallelStream().sorted(Comparator.comparing(ZSetOperations.TypedTuple::getScore)).collect(Collectors.toList());
+        lastHourData = lastHourData.parallelStream().sorted(Comparator.comparing(HashRate::getDate)).collect(Collectors.toList());
+        last24HoursData = last24HoursData.parallelStream().sorted(Comparator.comparing(HashRate::getDate)).collect(Collectors.toList());
+        last30DaysData = last30DaysData.parallelStream().sorted(Comparator.comparing(HashRate::getDate)).collect(Collectors.toList());
 
         List<String> data1 = Lists.newArrayList();
         List<String> labels1 = Lists.newArrayList();
@@ -69,27 +68,31 @@ public class AppController {
         List<String> data3 = Lists.newArrayList();
         List<String> labels3 = Lists.newArrayList();
 
+        DecimalFormat df = new DecimalFormat();
+        df.setMinimumFractionDigits(2);
+
         lastHourData.forEach(e -> {
-            data1.add(e.getValue());
+            data1.add(df.format(e.getValue()));
+
             labels1.add(Instant
-                    .ofEpochSecond(e.getScore().intValue())
+                    .ofEpochMilli(e.getDate().getTimeInMillis())
                     .atZone(ZoneId.systemDefault())
                     .format(DateTimeFormatter.ofPattern("HH:mm")));
 
         });
 
         last24HoursData.forEach(e -> {
-            data2.add(e.getValue());
+            data2.add(df.format(e.getValue()));
             labels2.add(Instant
-                    .ofEpochSecond(e.getScore().intValue())
+                    .ofEpochMilli(e.getDate().getTimeInMillis())
                     .atZone(ZoneId.systemDefault())
                     .format(DateTimeFormatter.ofPattern("HH:mm")));
         });
 
         last30DaysData.forEach(e -> {
-            data3.add(e.getValue());
+            data3.add(df.format(e.getValue()));
             labels3.add(Instant
-                    .ofEpochSecond(e.getScore().intValue())
+                    .ofEpochMilli(e.getDate().getTimeInMillis())
                     .atZone(ZoneId.systemDefault())
                     .format(DateTimeFormatter.ofPattern("d MMM HH:mm")));
         });

@@ -16,10 +16,10 @@
  */
 package com.wsojka.moonlandermonitor.repository;
 
+import com.wsojka.moonlandermonitor.model.HashRate;
 import com.wsojka.moonlandermonitor.model.MoonlanderProperty;
-import org.springframework.data.redis.core.ZSetOperations;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author Waldemar Sojka
@@ -28,5 +28,5 @@ public interface HistoricalDataRepository {
 
     void addPropertyValue(MoonlanderProperty property, long timestamp, double value);
 
-    Set<ZSetOperations.TypedTuple<String>> getPropertyValues(MoonlanderProperty property, long timestampStart, long timestampEnd);
+    List<HashRate> getHashRates(long timestampStart, long timestampEnd);
 }

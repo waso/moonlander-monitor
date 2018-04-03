@@ -14,15 +14,17 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.wsojka.moonlandermonitor;
+package com.wsojka.moonlandermonitor.repository;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.wsojka.moonlandermonitor.model.HashRate;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
-@SpringBootApplication
-public class App {
+import java.util.Calendar;
+import java.util.List;
 
-    public static void main(String[] args) {
-        SpringApplication.run(App.class, args);
-    }
+@Repository
+public interface HashRateRepository extends JpaRepository<HashRate, Long> {
+
+    List<HashRate> findByDateBetweenOrderByDateAsc(Calendar start, Calendar end);
 }

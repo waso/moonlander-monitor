@@ -16,14 +16,14 @@
  */
 package com.wsojka.moonlandermonitor.service;
 
+import com.wsojka.moonlandermonitor.model.HashRate;
 import com.wsojka.moonlandermonitor.model.MoonlanderProperty;
 import com.wsojka.moonlandermonitor.repository.HistoricalDataRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author Waldemar Sojka
@@ -42,7 +42,7 @@ public class MoonlanderServiceImpl implements MoonlanderService {
 
     @Override
     @Transactional
-    public Set<ZSetOperations.TypedTuple<String>> getPropertyValues(MoonlanderProperty property, long timestampStart, long timestampEnd) {
-        return historicalDataRepository.getPropertyValues(property, timestampStart, timestampEnd);
+    public List<HashRate> getHashRates(long timestampStart, long timestampEnd) {
+        return historicalDataRepository.getHashRates(timestampStart, timestampEnd);
     }
 }

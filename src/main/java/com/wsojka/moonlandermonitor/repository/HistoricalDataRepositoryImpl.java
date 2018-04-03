@@ -16,30 +16,45 @@
  */
 package com.wsojka.moonlandermonitor.repository;
 
+import com.wsojka.moonlandermonitor.model.HashRate;
 import com.wsojka.moonlandermonitor.model.MoonlanderProperty;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ZSetOperations;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
 
-import java.util.Set;
+import java.math.BigDecimal;
+import java.util.Calendar;
+import java.util.List;
 
 /**
  * @author Waldemar Sojka
  */
-@Repository
+@Service
 public class HistoricalDataRepositoryImpl implements HistoricalDataRepository {
 
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
 
+    @Autowired
+    private HashRateRepository hashRateRepository;
+
     @Override
     public void addPropertyValue(MoonlanderProperty property, long timestamp, double value) {
         redisTemplate.opsForZSet().add(property.name(), String.valueOf(value), timestamp);
+        HashRate hashRate = new HashRate();
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(timestamp);
+        hashRate.setDate(c);
+        hashRate.setValue(new BigDecimal(value));
+        hashRateRepository.saveAndFlush(hashRate);
     }
 
     @Override
-    public Set<ZSetOperations.TypedTuple<String>> getPropertyValues(MoonlanderProperty property, long timestampStart, long timestampEnd) {
-        return redisTemplate.opsForZSet().rangeByScoreWithScores(property.name(), timestampStart, timestampEnd);
+    public List<HashRate> getHashRates(long timestampStart, long timestampEnd) {
+        Calendar timeStart = Calendar.getInstance();
+        Calendar timeEnd = Calendar.getInstance();
+        timeStart.setTimeInMillis(timestampStart);
+        timeEnd.setTimeInMillis(timestampEnd);
+        return hashRateRepository.findByDateBetweenOrderByDateAsc(timeStart, timeEnd);
     }
 }

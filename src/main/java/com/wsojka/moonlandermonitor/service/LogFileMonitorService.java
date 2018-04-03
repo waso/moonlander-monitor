@@ -62,7 +62,7 @@ public class LogFileMonitorService {
                 if (m.find()) {
                     long timestamp;
                     try {
-                        timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(m.group(1)).toInstant().getEpochSecond();
+                        timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(m.group(1)).toInstant().toEpochMilli();
                     } catch (ParseException e ) {
                         log.error("problem with parsing date: " + line);
                         timestamp = Instant.now().getEpochSecond();
