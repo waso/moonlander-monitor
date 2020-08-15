@@ -66,9 +66,9 @@
       var myChart1 = new Chart(ctx1, {
           type: 'line',
           data: {
-              labels: [ <c:out value = "${labels1}" escapeXml="false"/> ],
+              labels: [ <c:out value = "${labels_1h}" escapeXml="false"/> ],
               datasets: [{
-                  data: [ <c:out value = "${fn:join(data1, ', ')}" /> ],
+                  data: [ <c:out value = "${data_1h}" /> ],
                   lineTension: 0,
                   backgroundColor: 'transparent',
                   borderColor: '#007bff',
@@ -103,9 +103,9 @@
       var myChart2 = new Chart(ctx2, {
           type: 'line',
           data: {
-              labels: [ <c:out value = "${labels2}" escapeXml="false"/> ],
+              labels: [ <c:out value = "${labels_24h}" escapeXml="false"/> ],
               datasets: [{
-                  data: [ <c:out value = "${fn:join(data2, ', ')}" /> ],
+                  data: [ <c:out value = "${data_24h}" /> ],
                   lineTension: 0,
                   backgroundColor: 'transparent',
                   borderColor: '#007bff',
@@ -140,9 +140,9 @@
       var myChart3 = new Chart(ctx3, {
           type: 'line',
           data: {
-              labels: [ <c:out value = "${labels3}" escapeXml="false"/> ],
+              labels: [ <c:out value = "${labels_7d}" escapeXml="false"/> ],
               datasets: [{
-                  data: [ <c:out value = "${fn:join(data3, ', ')}" /> ],
+                  data: [ <c:out value = "${data_7d}" /> ],
                   lineTension: 0,
                   backgroundColor: 'transparent',
                   borderColor: '#007bff',

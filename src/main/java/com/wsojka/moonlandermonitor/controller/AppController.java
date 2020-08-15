@@ -18,8 +18,9 @@ package com.wsojka.moonlandermonitor.controller;
 
 import com.wsojka.moonlandermonitor.model.HashRate;
 import com.wsojka.moonlandermonitor.service.MoonlanderService;
-import org.apache.log4j.Logger;
 import org.assertj.core.util.Lists;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -38,7 +39,7 @@ import java.util.stream.Collectors;
 @Controller
 public class AppController {
 
-    private static Logger log = Logger.getLogger(RestApiController.class);
+    private static final Logger log = LoggerFactory.getLogger(AppController.class);
 
     @Autowired
     private MoonlanderService moonlanderService;
@@ -96,15 +97,14 @@ public class AppController {
                     .atZone(ZoneId.systemDefault())
                     .format(DateTimeFormatter.ofPattern("d MMM HH:mm")));
         });
+        model.addAttribute("data_1h", String.join(",", data1));
+        model.addAttribute("labels_1h", "'" + String.join("','", labels1) + "'");
 
-        model.addAttribute("data1", data1.toArray());
-        model.addAttribute("labels1", "'" + String.join("','", labels1) + "'");
+        model.addAttribute("data_24h", String.join(",", data2));
+        model.addAttribute("labels_24h", "'" + String.join("','", labels2) + "'");
 
-        model.addAttribute("data2", data2.toArray());
-        model.addAttribute("labels2", "'" + String.join("','", labels2) + "'");
-
-        model.addAttribute("data3", data3.toArray());
-        model.addAttribute("labels3", "'" + String.join("','", labels3) + "'");
+        model.addAttribute("data_7d", String.join(",", data3));
+        model.addAttribute("labels_7d", "'" + String.join("','", labels3) + "'");
         return "index";
     }
 }

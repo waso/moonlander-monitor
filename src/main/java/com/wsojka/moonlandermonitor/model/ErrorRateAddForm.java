@@ -16,11 +16,13 @@
  */
 package com.wsojka.moonlandermonitor.model;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class ErrorRateAddForm {
 
     @NotNull(message = "error rate can't be empty")
+    @Min(0)
     private Double errorRate;
 
     public Double getErrorRate() {

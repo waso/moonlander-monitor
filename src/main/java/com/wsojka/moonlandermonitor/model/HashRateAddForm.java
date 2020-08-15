@@ -16,11 +16,13 @@
  */
 package com.wsojka.moonlandermonitor.model;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 public class HashRateAddForm {
 
     @NotNull(message = "hash rate can't be empty")
+    @Min(0)
     private Double hashRate;
 
     public Double getHashRate() {

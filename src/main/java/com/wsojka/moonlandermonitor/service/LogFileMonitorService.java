@@ -18,7 +18,8 @@ package com.wsojka.moonlandermonitor.service;
 
 import com.wsojka.moonlandermonitor.model.LogFileContent;
 import com.wsojka.moonlandermonitor.model.MoonlanderProperty;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.assertj.core.util.Lists;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +39,7 @@ import java.util.regex.Pattern;
 @Service
 public class LogFileMonitorService {
 
-    private static Logger log = Logger.getLogger(LogFileMonitorService.class);
+    private static Logger log = LogManager.getLogger(LogFileMonitorService.class);
 
     private static int previousLineNumber = -1;
 
@@ -63,7 +64,7 @@ public class LogFileMonitorService {
                     long timestamp;
                     try {
                         timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(m.group(1)).toInstant().toEpochMilli();
-                    } catch (ParseException e ) {
+                    } catch (ParseException e) {
                         log.error("problem with parsing date: " + line);
                         timestamp = Instant.now().getEpochSecond();
                     }

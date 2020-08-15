@@ -16,8 +16,6 @@
  */
 package com.wsojka.moonlandermonitor;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,16 +23,14 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-@Configuration
 @EnableWebSecurity
-@EnableAutoConfiguration
 @EnableScheduling
 @EnableJpaRepositories
 public class AppConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable().authorizeRequests()
+        http.csrf().disable().anonymous().and().authorizeRequests()
                 .antMatchers("/**").permitAll();
     }
 

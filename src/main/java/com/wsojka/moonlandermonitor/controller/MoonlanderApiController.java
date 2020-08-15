@@ -21,8 +21,10 @@ import com.wsojka.moonlandermonitor.model.ErrorRateAddForm;
 import com.wsojka.moonlandermonitor.model.HashRateAddForm;
 import com.wsojka.moonlandermonitor.model.MoonlanderProperty;
 import com.wsojka.moonlandermonitor.service.MoonlanderService;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
@@ -35,38 +37,51 @@ import java.util.stream.Collectors;
  * @author Waldemar Sojka
  */
 @RestController
-public class RestApiController {
+@RequestMapping("api")
+public class MoonlanderApiController {
 
-    private static Logger log = Logger.getLogger(RestApiController.class);
+    private static final Logger log = LoggerFactory.getLogger(MoonlanderApiController.class);
+    
+    private Gson gson;
 
-    @Autowired
     private MoonlanderService moonlanderService;
 
-    @RequestMapping(value = "/api/hashrate/add", produces = "application/json", consumes = "application/json", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<?> addHashRateRate(@Valid @RequestBody HashRateAddForm form, Errors errors) {
+    @Autowired
+    public MoonlanderApiController(
+            Gson gson,
+            MoonlanderService moonlanderService
+    ) {
+        this.gson = gson;
+        this.moonlanderService = moonlanderService;
+    }
+
+    @PostMapping("/hashrate/add")
+    ResponseEntity<?> addHashRateRate(@Valid @RequestBody HashRateAddForm form, Errors errors) {
         if (errors.hasErrors()) {
-            Gson gson = new Gson();
             return ResponseEntity
                     .badRequest()
-                    .body(gson.toJson(errors.getAllErrors().parallelStream().map(m -> m.getDefaultMessage()).collect(Collectors.toList())));
+                    .body(gson.toJson(errors.getAllErrors()
+                            .parallelStream()
+                            .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                            .collect(Collectors.toList())));
         }
         log.info("hash rate received: " + form.getHashRate());
-        moonlanderService.addPropertyValue(MoonlanderProperty.ML_HASH_RATE, form.getHashRate(), Instant.now().getEpochSecond());
+        moonlanderService.addPropertyValue(MoonlanderProperty.ML_HASH_RATE, form.getHashRate(), Instant.now().toEpochMilli());
         return ResponseEntity.ok("{\"success\": true}");
     }
 
-    @RequestMapping(value = "/api/errorrate/add", produces = "application/json", consumes = "application/json", method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseEntity<?> addErrorRate(@Valid @RequestBody ErrorRateAddForm form, Errors errors) {
+    @PostMapping("/errorrate/add")
+    ResponseEntity<?> addErrorRate(@Valid @RequestBody ErrorRateAddForm form, Errors errors) {
         if (errors.hasErrors()) {
-            Gson gson = new Gson();
             return ResponseEntity
                     .badRequest()
-                    .body(gson.toJson(errors.getAllErrors().parallelStream().map(m -> m.getDefaultMessage()).collect(Collectors.toList())));
+                    .body(gson.toJson(errors.getAllErrors()
+                            .parallelStream()
+                            .map(DefaultMessageSourceResolvable::getDefaultMessage)
+                            .collect(Collectors.toList())));
         }
         log.info("error rate received: " + form.getErrorRate());
-        moonlanderService.addPropertyValue(MoonlanderProperty.ML_ERROR_RATE, form.getErrorRate(), Instant.now().getEpochSecond());
+        moonlanderService.addPropertyValue(MoonlanderProperty.ML_ERROR_RATE, form.getErrorRate(), Instant.now().toEpochMilli());
         return ResponseEntity.ok("{\"success\": true}");
     }
 }
