@@ -16,6 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 public class ErrorRateAddFormTest {
 
+
     private Validator validator;
 
     @Before
