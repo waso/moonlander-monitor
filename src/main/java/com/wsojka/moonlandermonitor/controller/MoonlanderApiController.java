@@ -48,10 +48,9 @@ public class MoonlanderApiController {
 
     @Autowired
     public MoonlanderApiController(
-            Gson gson,
             MoonlanderService moonlanderService
     ) {
-        this.gson = gson;
+        this.gson = new Gson();
         this.moonlanderService = moonlanderService;
     }
 

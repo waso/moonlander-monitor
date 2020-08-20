@@ -16,7 +16,6 @@
  */
 package com.wsojka.moonlandermonitor;
 
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -25,7 +24,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 @EnableWebSecurity
 @EnableScheduling
-@EnableJpaRepositories
 public class AppConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
