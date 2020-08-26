@@ -65,6 +65,15 @@ public class MoonlanderApiControllerTests {
     }
 
     @Test
+    public void invalidBooleanTypeTest() throws Exception {
+        mvc.perform(post("/api/hashrate/add")
+                .content("{\"hashRate\": true}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     public void invalidRequestTest() throws Exception {
         mvc.perform(post("/api/hashrate/add")
                 .content("{\"aaa\": \"bbb\"}")
@@ -80,5 +89,15 @@ public class MoonlanderApiControllerTests {
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isMethodNotAllowed());
+    }
+
+    @Test
+    public void negativeHashRateTest() throws Exception {
+        mvc.perform(post("/api/hashrate/add")
+                .content("{\"hashRate\": -1}")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("[\"must be greater than or equal to 0\"]"));
     }
 }
